@@ -380,9 +380,6 @@ class JavaCharStream
     }
   }
 
-#if GENERATE_ANNOTATIONS
-  @Deprecated
-#fi
   /**
    * @deprecated
    * @see #getEndColumn
@@ -396,9 +393,6 @@ class JavaCharStream
 #fi
   }
 
-#if GENERATE_ANNOTATIONS
-  @Deprecated
-#fi
   /**
    * @deprecated
    * @see #getEndLine
