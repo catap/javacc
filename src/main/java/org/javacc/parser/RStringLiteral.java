@@ -587,7 +587,11 @@ public class RStringLiteral extends RegularExpression {
 
      // TODO :: CBA --  Require Unification of output language specific processing into a single Enum class
      if (Options.isOutputLanguageJava()) {
-       codeGenerator.genCodeLine("   try { curChar = input_stream.readChar(); }");
+       codeGenerator.genCodeLine("   try {");
+       codeGenerator.genCodeLine("     if (!input_stream.hasNextChar())");
+       codeGenerator.genCodeLine("       return pos + 1;");
+       codeGenerator.genCodeLine("     curChar = input_stream.readChar();");
+       codeGenerator.genCodeLine("   }");
        codeGenerator.genCodeLine("   catch(java.io.IOException e) { return pos + 1; }");
      } else if (Options.getOutputLanguage().equals(Options.OUTPUT_LANGUAGE__CPP)){
        codeGenerator.genCodeLine("   if (input_stream->endOfInput()) { return pos + 1; }");
@@ -865,8 +869,14 @@ public class RStringLiteral extends RegularExpression {
 
            // TODO :: CBA --  Require Unification of output language specific processing into a single Enum class
            if (Options.isOutputLanguageJava()) {
-             codeGenerator.genCodeLine("   try { curChar = input_stream.readChar(); }");
-             codeGenerator.genCodeLine("   catch(java.io.IOException e) {");
+             codeGenerator.genCodeLine("   " + Options.getBooleanType() + " hasNextChar = false;");
+             codeGenerator.genCodeLine("   try {");
+             codeGenerator.genCodeLine("     hasNextChar = input_stream.hasNextChar();");
+             codeGenerator.genCodeLine("     if (hasNextChar)");
+             codeGenerator.genCodeLine("       curChar = input_stream.readChar();");
+             codeGenerator.genCodeLine("   }");
+             codeGenerator.genCodeLine("   catch(java.io.IOException e) { hasNextChar = false; }");
+             codeGenerator.genCodeLine("   if (!hasNextChar) {");
            } else if (Options.getOutputLanguage().equals(Options.OUTPUT_LANGUAGE__CPP)) {
              codeGenerator.genCodeLine("   if (input_stream->endOfInput()) {");
            } else {
